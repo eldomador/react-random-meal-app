@@ -1,17 +1,71 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
 
 ReactDOM.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+
+const getMealBtn = document.getElementById("get_meal");
+const mealConteiner = document.getElementById("meal");
+
+getMealBtn.addEventListener("click", () => {
+  fetch("https://www.themealdb.com/api/json/v1/1/random.php")
+    .then((res) => res.json())
+    .then((res) => {
+      createMeal(res.meals[0]);
+    });
+});
+
+const createMeal = (meal) => {
+  const ingredients = [];
+  // Get all ingredients from the object. Up to 20
+  for (let i = 1; i <= 20; i++) {
+    if (meal[`strIngredient${i}`]) {
+      ingredients.push(
+        `${meal[`strIngredient${i}`]} - ${meal[`strMeasure${i}`]}`
+      );
+    } else {
+      // Stop if no more ingredients
+      break;
+    }
+  }
+
+  console.log(ingredients);
+
+  mealConteiner.innerHTML = `
+    <div class="row">
+        <div class ="columns five">
+            <img src="${meal.strMealThumb}" alt="Meal img"/>
+            <p><strong>Category:</strong> ${meal.strCategory}<p>
+            <p><strong>Area:</strong> ${meal.strArea}<p>
+            <p><strong>Tags:</strong> ${meal.strTags.split(",").join(", ")}<p>
+            <h5>Ingredients</h5>
+            <ul>
+            ${ingredients
+              .map(
+                (ingredient) => `
+            <li>${ingredient}</li>
+            `
+              )
+              .join("")}
+            </ul>
+        </div>
+        <div class ="columns seven">
+            <h4>${meal.strMeal}</h4>
+            <p>${meal.strInstructions}</p>
+        </div>
+    </div>
+    </div class=row>
+        <h5>Video Recipe</h5>
+        <div class = "videoWrapper">
+    <iframe src="https://www.youtube.com/embed/${meal.strYoutube.slice(-11)}"/>
+    </div>
+    </div>
+    `;
+};
