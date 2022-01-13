@@ -5,9 +5,9 @@ class Home extends React.Component {
       <div class="container">
         <div class="row text-center">
           <h3>Feeling Hungry?</h3>
-          <h5>Get a random meal by clicking below</h5>
+          <h5>Get a random recipe by clicking below</h5>
           <button class="button-primary" id="get_meal">
-            Get meal
+            Get recipe
           </button>
         </div>
         <div class="row meal" id="meal"></div>
